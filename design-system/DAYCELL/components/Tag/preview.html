@@ -1,0 +1,12 @@
+<!-- @dsCard group="Content" height=96 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Tag — preview</title></head>
+<body>
+<div id="root"></div>
+<script>
+  var D = window.Daycell, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{className:'dm-row',style:{alignItems:'flex-start',gap:48}},h('div',{className:'dm-stack'},h(D.Tag,null,'Clean'),h(D.Tag,null,'Energy works')),h('div',{className:'dm-stack'},h(D.Tag,{plain:true},'Solar'),h(D.Tag,{plain:true},'Storage'),h(D.Tag,{plain:true},'Grid'))));
+</script>
+</body>
+</html>

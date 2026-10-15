@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DAYCELL — Deye SUN-10K</title>
+<link rel="icon" href="../design-system/DAYCELL/assets/Logos/daycell-mark-small.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../design-system/DAYCELL/tokens.css">
+<link rel="stylesheet" href="../design-system/DAYCELL/components/bundle.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="prefetch" href="assets/deye/deye-sun10k-front.png">
+<link rel="prefetch" href="assets/deye/deye-sun10k-side.png">
+</head>
+<body>
+<main class="dm-stage stage">
+  <div class="dm-frame home">
+
+    <nav class="dm-nav home-nav" aria-label="Main">
+      <div class="dm-nav-l">
+        <a class="dm-logo home-logo" href="#" aria-label="DAYCELL Energy home">
+          <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="8"/><circle cx="50" cy="50" r="17" fill="var(--energy)"/></svg>
+          <span class="home-logo-words">DAYCELL<span class="home-logo-sub">Energy</span></span>
+        </a>
+      </div>
+      <div class="dm-nav-c home-links">
+        <a href="#" aria-current="page">Catalog</a>
+        <a href="#">Systems</a>
+        <a href="#">Projects</a>
+        <a href="#">About</a>
+      </div>
+      <div class="dm-nav-r">
+        <button class="dm-icon" type="button" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5 20 20"/></svg>
+        </button>
+        <button class="dm-icon" type="button" aria-label="Cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M3 4h2.5l2 11h11l1.5-8H7"/><circle cx="9" cy="19" r="1.25"/><circle cx="17" cy="19" r="1.25"/></svg>
+        </button>
+        <button class="dm-icon" type="button" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M4 9h16M4 15h16"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <figure class="home-visual">
+      <!-- Все товары на квадратном холсте 1600px, высота товара 1400 — одинаковый масштаб и ось для анимаций -->
+      <img class="home-object" data-f="image" src="assets/deye/deye-sun10k-34.png" width="1600" height="1600"
+           alt="Deye SUN-10K hybrid inverter">
+    </figure>
+
+    <div class="home-bottom">
+      <!-- Слайд 2 (Deye) — в разметке, чтобы экран работал без JS; остальные слайды в app.js -->
+      <div class="home-hero" aria-live="polite">
+        <div class="dm-hero">
+          <div class="dm-hero-i home-category" data-f="category">Hybrid inverter</div>
+          <h1 class="dm-hero-t"><span data-f="brand">Deye</span><small data-f="model">SUN-10K</small></h1>
+        </div>
+        <p class="body home-lead" data-f="lead">Premium inverter. For comfort and quiet in your home.</p>
+        <a class="dm-btn dm-btn-link" data-f="shop" href="#catalog?category=inverters">
+          <span data-f="shopText">Shop inverters</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M4 12h15M14 7l5 5-5 5"/></svg>
+        </a>
+      </div>
+
+      <div class="home-center">
+        <!-- Flow-эффект (порт 21st.dev/flow-button на CSS): стрелки меняются, круг заливает кнопку из центра -->
+        <a class="dm-btn dm-btn-primary home-cta flow" href="#quote">
+          <svg class="flow-arr flow-arr-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M4 12h15M14 7l5 5-5 5"/></svg>
+          <span class="flow-text">Get a quote</span>
+          <span class="flow-circle" aria-hidden="true"></span>
+          <svg class="flow-arr flow-arr-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M4 12h15M14 7l5 5-5 5"/></svg>
+        </a>
+        <div class="dm-pager home-pager" role="group" aria-label="Featured products">
+          <button class="dm-dot" type="button" data-slide="0" aria-label="LONGi Hi-MO X10 Explorer"></button>
+          <button class="dm-dot" type="button" data-slide="1" aria-label="Deye SUN-10K" aria-current="true"></button>
+          <button class="dm-dot" type="button" data-slide="2" aria-label="Felicity FLB48230WG1-H"></button>
+        </div>
+      </div>
+
+      <div class="home-tags">
+        <div class="dm-stack" data-f="specs">
+          <span class="dm-tag">10 kW</span>
+          <span class="dm-tag">10 years warranty</span>
+        </div>
+        <!-- Категории ведут в общий каталог с фильтром; страницы каталога пока нет -->
+        <nav class="dm-stack home-cats" aria-label="Catalog categories">
+          <a class="dm-tag dm-tag-plain" href="#catalog?category=solar-panels">Solar panels</a>
+          <a class="dm-tag dm-tag-plain" href="#catalog?category=home-batteries">Home batteries</a>
+          <a class="dm-tag dm-tag-plain" href="#catalog?category=inverters">Inverters</a>
+        </nav>
+      </div>
+    </div>
+
+  </div>
+</main>
+<script src="app.js" defer></script>
+</body>
+</html>

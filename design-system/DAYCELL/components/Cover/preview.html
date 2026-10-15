@@ -1,0 +1,53 @@
+<!-- @dsCard height=300 -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>DAYCELL</title>
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--surface); color:var(--ink); font-family:var(--font-text); overflow:hidden; }
+  .cover { position:relative; height:300px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:300px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:300px; }
+  .canvas { fill:var(--canvas); }
+  .frame { fill:var(--surface-raised); stroke:var(--frame); stroke-width:6; rx:var(--radius-frame); }
+  .mist { fill:var(--mist); }
+  .ring { fill:none; stroke:var(--ink); stroke-width:1; }
+  .ink { fill:var(--ink); }
+  .energy { fill:var(--energy); }
+  .words { position:absolute; left:56px; bottom:40px; max-width:440px; }
+  .name { margin:0; font-family:var(--font-display); font-size:120px; line-height:.9; font-weight:700; letter-spacing:-.01em; color:var(--ink); }
+  .tag { margin:var(--space-3) 0 0 2px; font-size:14px; line-height:20px; color:var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 300" width="480" height="300">
+<!--
+  blocks      canvas 480×300 ground slab (light ground) · frame-card surface-raised 360×232 with frame stroke, radius-frame, bleeding off the right · mist disc r96 · ink tag block 72×16 · energy disc r22 — ≈45% of the cover
+  arrangement one framed card bleeding right on the canvas slab, the lens off-centre inside it, ink tag stacked at lower right like the Tag stack
+  pattern     literal motif (lens) — from "Один визуал — одна мысль" and the mist/energy tokens: concentric hairline rings (ink, 1px) around the energy core, 4 rings at space-6 pitch
+  scales      gutters space-14 / space-10, rings r 48/72/120/144 (space-6 steps), radius-frame card, radius-pill discs, tag height space-4
+-->
+<rect class="canvas" x="0" y="0" width="480" height="300"/>
+<rect class="frame" x="56" y="34" width="460" height="232"/>
+<circle class="mist" cx="236" cy="150" r="96"/>
+<circle class="ring" cx="236" cy="150" r="120"/>
+<circle class="ring" cx="236" cy="150" r="144"/>
+<circle class="ring" cx="236" cy="150" r="72"/>
+<circle class="ring" cx="236" cy="150" r="48"/>
+<circle class="energy" cx="236" cy="150" r="22"/>
+<rect class="ink" x="96" y="226" width="72" height="16"/>
+<rect class="ink" x="120" y="246" width="48" height="16"/>
+<circle class="ink" cx="404" cy="242" r="4"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">DAYCELL</h1>
+<p class="tag">Чистая энергия, тихий интерфейс.</p>
+</div>
+</div>
+</body>
+</html>

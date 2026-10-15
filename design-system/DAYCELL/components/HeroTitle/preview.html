@@ -1,0 +1,12 @@
+<!-- @dsCard group="Content" height=200 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>HeroTitle — preview</title></head>
+<body>
+<div id="root"></div>
+<script>
+  var D = window.Daycell, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{className:'dm-row',style:{alignItems:'flex-end',gap:80}},h(D.HeroTitle,{index:'02',title:'Solar .',subtitle:'Systems'}),h(D.HeroTitle,{index:'03',title:'240 MW'})));
+</script>
+</body>
+</html>

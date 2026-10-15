@@ -1,0 +1,182 @@
+/* DAYCELL — home screen. Только компоновка поверх design-system (tokens.css + bundle.css). */
+
+html, body { background: var(--canvas); }
+body { min-height: 100svh; }
+
+/* Stage: внешнее поле вокруг Frame */
+.stage { min-height: 100svh; box-sizing: border-box; display: flex; }
+
+/* Frame: экран как объект; якоря в четырёх углах, центр — визуал */
+.home {
+  flex: 1;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: calc(100svh - 2 * var(--space-10));
+  min-height: max(600px, calc(100svh - 2 * var(--space-10)));
+}
+
+.home-nav { position: relative; z-index: 2; }
+.home-links { font-size: 15px; }
+.home-nav .dm-logo { color: var(--ink); text-decoration: none; }
+.home-nav .dm-logo:hover { text-decoration: none; }
+/* Лого: знак + слово, под словом мелкая подпись раздела (micro) */
+.home-logo { align-items: flex-start; }
+.home-logo svg { margin-top: 1px; }
+.home-logo-words { display: flex; flex-direction: column; line-height: 1; }
+.home-logo-sub { margin-top: 3px; font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--ink-muted); }
+
+/* Центр: один объект. multiply убирает белый фон фото в тон surface */
+.home-visual {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* объект живёт в полосе между Nav и CTA: на низких экранах уменьшается, а не наезжает */
+  padding: 120px 0 184px;
+  pointer-events: none;
+}
+/* Объект: прозрачный PNG на квадратном холсте, центр холста = ось будущего поворота */
+.home-visual img {
+  display: block;
+  height: min(62vh, 560px);
+  max-height: 100%;
+  min-height: 0;
+  width: auto;
+  max-width: 44%;
+  object-fit: contain;
+  transform-origin: 50% 50%;
+}
+
+/* Нижняя кромка: HeroTitle слева, Pager по центру, Tag справа */
+.home-bottom {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: var(--space-6);
+}
+.home-hero { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+.home-hero .dm-hero-i { margin-bottom: var(--space-3); } /* категория прижата к названию товара */
+.home-category { color: var(--ink-muted); }
+.home-lead { margin: 0; max-width: 300px; color: var(--ink); }
+/* Центр низа: главная CTA (primary, одна на экран) над пейджером */
+.home-center { justify-self: center; display: flex; flex-direction: column; align-items: center; gap: var(--space-10); }
+.home-cta { height: 48px; padding: 0 var(--space-10); font-size: 15px; text-decoration: none; justify-content: center; }
+.home-cta:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+
+/* Flow button: покой — primary (ink), hover/focus — белый круг заливает из центра, текст ink,
+   правая стрелка улетает, левая влетает с пружиной. Углы острые по DS (radius-0). */
+.flow { position: relative; overflow: hidden; isolation: isolate; gap: 0;
+  transition: color 600ms cubic-bezier(.23,1,.32,1), transform 200ms ease; }
+.flow.dm-btn-primary:hover { background: var(--inverse); opacity: 1; }
+.flow-text { position: relative; z-index: 1; transform: translateX(-10px);
+  transition: transform 800ms ease-out; }
+.flow-circle { position: absolute; z-index: 0; top: 50%; left: 50%; width: 16px; aspect-ratio: 1;
+  border-radius: var(--radius-pill); background: var(--surface-raised); opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: width 800ms cubic-bezier(.19,1,.22,1), opacity 800ms cubic-bezier(.19,1,.22,1); }
+.flow-arr { position: absolute; z-index: 2; top: 50%; width: 16px; height: 16px; margin-top: -8px;
+  transition: left 800ms cubic-bezier(.34,1.56,.64,1), right 800ms cubic-bezier(.34,1.56,.64,1); }
+.flow-arr-in  { left: -25%; }
+.flow-arr-out { right: var(--space-4); }
+
+.flow:hover, .flow:focus-visible { color: var(--ink); }
+.flow:hover .flow-text, .flow:focus-visible .flow-text { transform: translateX(10px); }
+.flow:hover .flow-circle, .flow:focus-visible .flow-circle { width: 160%; opacity: 1; }
+.flow:hover .flow-arr-in, .flow:focus-visible .flow-arr-in { left: var(--space-4); }
+.flow:hover .flow-arr-out, .flow:focus-visible .flow-arr-out { right: -25%; }
+.flow:active { transform: scale(.95); }
+/* Пагинация: точки 8px (ink-muted), активная — пилюля 28px (ink), ширина растёт плавно.
+   Кнопка 24px по высоте — зона нажатия больше видимой точки. */
+.home-pager { gap: 0; align-items: center; }
+.home-pager .dm-dot {
+  width: auto; height: 24px; padding: 0 4px;
+  border: 0; border-radius: 0; background: none;
+  display: inline-flex; align-items: center;
+}
+.home-pager .dm-dot::before {
+  content: ""; display: block; width: 8px; height: 8px;
+  border-radius: var(--radius-pill); background: var(--ink-muted);
+  transition: width 420ms cubic-bezier(.2,.7,.2,1), background-color 240ms ease;
+}
+.home-pager .dm-dot:hover::before { background: var(--ink); }
+.home-pager .dm-dot[aria-current] { background: none; }
+.home-pager .dm-dot[aria-current]::before { width: 28px; background: var(--ink); }
+/* Категории-ссылки: как Nav — без цвета, ховер = подчёркивание 1px */
+.home-cats a { color: var(--ink); text-decoration: none; padding: 2px 0; }
+.home-cats a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.home-tags { justify-self: end; display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-6); }
+
+/* Ссылки и кнопки: фокус как в DS */
+.home a:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+
+/* Tablet: поля space-10, центральное меню уходит в кнопку «меню» */
+@media (max-width: 1100px) {
+  .dm-frame.home { padding: var(--space-10); }
+  .home-links { gap: var(--space-10); }
+  .home-visual img { max-width: 56%; }
+}
+@media (max-width: 900px) {
+  .home-nav { grid-template-columns: 1fr auto; }
+  .home-links { display: none; }
+}
+
+/* Mobile: поля space-6, заголовок над пейджером, визуал в потоке */
+@media (max-width: 720px) {
+  .dm-stage.stage { padding: var(--space-3); }
+  .dm-frame.home {
+    padding: var(--space-6);
+    grid-template-rows: auto auto auto;
+    gap: var(--space-6);
+    min-height: calc(100svh - 2 * var(--space-3));
+    border-radius: 22px;
+  }
+  .home-nav { grid-template-columns: 1fr auto; }
+  .home-links { display: none; }
+  .dm-nav-r { gap: var(--space-6); }
+
+  .home-visual { position: static; pointer-events: auto; padding: var(--space-6) 0 0; }
+  .home-visual img { height: auto; width: 82%; max-width: 360px; }
+
+  .home-bottom {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "hero hero" "cta cta" "pager tags";
+    align-items: end;
+    row-gap: var(--space-10);
+  }
+  .home-hero { grid-area: hero; }
+  .home-center { display: contents; }
+  .home-cta { grid-area: cta; margin-top: calc(-1 * var(--space-4)); }
+  .home-pager { grid-area: pager; justify-self: start; }
+  .home-tags { grid-area: tags; flex-direction: row; flex-wrap: wrap; justify-content: flex-end; align-items: flex-end; gap: var(--space-6); }}
+
+/* Движение: медленно и плавно (DS) — объект 0.98→1, углы проявляются по очереди */
+@media (prefers-reduced-motion: no-preference) {
+  /* fill-mode backwards: после входа transform свободен (нужен для :active и будущего вращения) */
+  .home-visual img { animation: dm-object 900ms cubic-bezier(.2,.7,.2,1) backwards; }
+  .home-nav, .home-hero, .home-cta, .home-pager, .home-tags { animation: dm-rise 600ms cubic-bezier(.2,.7,.2,1) backwards; }
+  .home-hero  { animation-delay: 120ms; }
+  .home-cta   { animation-delay: 180ms; }
+  .home-pager { animation-delay: 220ms; }
+  .home-tags  { animation-delay: 280ms; }
+  .home-nav .dm-logo circle:last-child { animation: dm-breathe 2.4s ease-in-out infinite; }
+
+  .dm-btn-link svg { transition: transform 240ms cubic-bezier(.2,.7,.2,1); }
+  .dm-btn-link:hover svg { transform: translateX(4px); }
+}
+/* Без движения: заливка и цвет меняются мгновенно, стрелки и текст не ездят */
+@media (prefers-reduced-motion: reduce) {
+  .flow, .flow * { transition: none !important; }
+  .home-pager .dm-dot::before { transition: none; }
+  .flow:hover .flow-text, .flow:focus-visible .flow-text { transform: translateX(-10px); }
+  .flow:hover .flow-arr-in, .flow:focus-visible .flow-arr-in { left: -25%; }
+  .flow:hover .flow-arr-out, .flow:focus-visible .flow-arr-out { right: var(--space-4); }
+}
+@keyframes dm-object { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes dm-rise   { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes dm-breathe { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }

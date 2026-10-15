@@ -1,0 +1,36 @@
+/* DAYCELL — generated from tokens.json */
+:root {
+  --canvas: #eceeef;
+  --surface: #f7f7f6;
+  --surface-raised: #ffffff;
+  --frame: #ffffff;
+  --ink: #111315;
+  --ink-muted: #5b6066;
+  --line: #dcdfe2;
+  --mist: #c9d0d6;
+  --energy: #e8a23a;
+  --inverse: var(--ink);
+  --on-inverse: var(--surface);
+  --danger: #a3261b;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-10: 40px;
+  --space-14: 56px;
+  --space-20: 80px;
+  --radius-0: 0;
+  --radius-frame: 28px;
+  --radius-pill: 999px;
+  --shadow-frame: 0 40px 60px -40px rgba(30,36,42,0.18);
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-text: "Inter Tight", system-ui, sans-serif;
+}
+.display-xl { font-family: var(--font-display); font-size: 120px; line-height: 0.9; font-weight: 700; letter-spacing: -0.01em; text-transform: uppercase; }
+.display { font-family: var(--font-display); font-size: 44px; line-height: 0.92; font-weight: 700; text-transform: uppercase; }
+.title { font-family: var(--font-display); font-size: 24px; line-height: 1; font-weight: 700; text-transform: uppercase; }
+.label { font-family: var(--font-display); font-size: 13px; line-height: 1; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; }
+.micro { font-family: var(--font-display); font-size: 11px; line-height: 1; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.body { font-family: var(--font-text); font-size: 15px; line-height: 22px; font-weight: 400; }
+.caption { font-family: var(--font-text); font-size: 12px; line-height: 16px; font-weight: 400; }

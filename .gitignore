@@ -1,0 +1,16 @@
+# Чужие референсы (Pinterest/Dribbble) — не публикуем
+Reference/
+
+# Архив дизайн-системы — уже распакован в design-system/
+*.zip
+
+# Настройки и скиллы Claude Code
+.claude/
+
+# Рабочие файлы taste-skill
+.taste-skill/
+
+# Системное
+Thumbs.db
+desktop.ini
+.DS_Store
