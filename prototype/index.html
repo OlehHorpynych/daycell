@@ -35,9 +35,23 @@
         <button class="dm-icon" type="button" aria-label="Cart">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M3 4h2.5l2 11h11l1.5-8H7"/><circle cx="9" cy="19" r="1.25"/><circle cx="17" cy="19" r="1.25"/></svg>
         </button>
-        <button class="dm-icon" type="button" aria-label="Menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" aria-hidden="true"><path d="M4 9h16M4 15h16"/></svg>
-        </button>
+        <!-- Liquid-morph меню (порт 21st.dev/liquid-morph-floating-menu на CSS/JS):
+             открывается по наведению; на тач-экранах и с клавиатуры — по нажатию. Логика в menu.js -->
+        <div class="burger" data-open="false">
+          <div class="burger-shape">
+            <span class="burger-fill" aria-hidden="true"></span>
+            <button class="burger-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-menu">
+              <span class="burger-line"></span>
+              <span class="burger-line"></span>
+            </button>
+            <ul class="burger-list" id="site-menu">
+              <li><a class="burger-link" href="#catalog">Catalog</a></li>
+              <li><a class="burger-link" href="#">Systems</a></li>
+              <li><a class="burger-link" href="#">Projects</a></li>
+              <li><a class="burger-link" href="#">About</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -93,5 +107,6 @@
   </div>
 </main>
 <script src="app.js" defer></script>
+<script src="menu.js" defer></script>
 </body>
 </html>

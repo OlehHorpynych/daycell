@@ -76,11 +76,16 @@
     });
   }
 
+  var restartTimer = function () {}; // задаётся ниже, в блоке автосмены
+  var shown = current;
+
+  // Новая активная точка = новый отсчёт 5s (CSS-заливка тоже стартует заново на новой точке)
   function markDots(n) {
     dots.forEach(function (d, i) {
       if (i === n) d.setAttribute('aria-current', 'true');
       else d.removeAttribute('aria-current');
     });
+    if (n !== shown) { shown = n; restartTimer(); }
   }
 
   function ready(src) {
@@ -100,19 +105,39 @@
     if (reduced.matches || !img.animate) { fill(s); return; }
 
     busy = true;
-    var ease = 'cubic-bezier(.2,.7,.2,1)';
-    var parts = [img, hero, specs];
-    var outs = parts.map(function (el) {
-      return el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease-in', fill: 'forwards' });
-    });
+    // Мягкий переход ≈1.6s: уход — фото слегка растворяется в размытии, строки текста уходят вверх по очереди;
+    // приход — фото проявляется из размытия и 0.97, строки поднимаются снизу лесенкой.
+    var easeOut = 'cubic-bezier(.16,1,.3,1)';   // плавное торможение
+    var easeIn = 'cubic-bezier(.65,0,.35,1)';   // мягкий разгон-торможение для ухода
+    // Лесенка — только для левой колонки. Плашки (specs) стоят отдельно справа и идут вместе с первой строкой,
+    // иначе как последняя ступень лесенки они появлялись заметно позже остального.
+    var lines = [f('category'), hero.querySelector('.dm-hero-t'), f('lead'), f('shop')];
+    var lineOut = function (i) { return i * 40; };
+    var lineIn = function (i) { return 140 + i * 80; };
+    var steps = lines.map(function (el, i) { return { el: el, out: lineOut(i), in: lineIn(i) }; })
+      .concat({ el: specs, out: lineOut(0), in: lineIn(0) });
+
+    var outs = [img.animate(
+      [{ opacity: 1, transform: 'none', filter: 'blur(0)' }, { opacity: 0, transform: 'scale(1.015)', filter: 'blur(6px)' }],
+      { duration: 520, easing: easeIn, fill: 'forwards' }
+    )].concat(steps.map(function (s) {
+      return s.el.animate(
+        [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-10px)' }],
+        { duration: 420, delay: s.out, easing: easeIn, fill: 'forwards' }
+      );
+    }));
 
     Promise.all(outs.map(function (a) { return a.finished; }).concat(ready(s.image))).then(function () {
       fill(s);
-      var ins = [
-        img.animate([{ opacity: 0, transform: 'scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: ease }),
-        hero.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 480, delay: 60, easing: ease, fill: 'backwards' }),
-        specs.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 480, delay: 120, easing: ease, fill: 'backwards' })
-      ];
+      var ins = [img.animate(
+        [{ opacity: 0, transform: 'scale(.97)', filter: 'blur(8px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
+        { duration: 1100, easing: easeOut }
+      )].concat(steps.map(function (st) {
+        return st.el.animate(
+          [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 900, delay: st.in, easing: easeOut, fill: 'backwards' }
+        );
+      }));
       outs.forEach(function (a) { a.cancel(); });
       return Promise.all(ins.map(function (a) { return a.finished; }));
     }).then(done, done);
@@ -136,6 +161,58 @@
     if (e.key === 'ArrowRight') go(target() + 1);
     else if (e.key === 'ArrowLeft') go(target() - 1);
   });
+
+  // Автосмена каждые 7s. Время считает JS-таймер с учётом пауз (CSS-анимации в фоне тормозятся),
+  // заливка пилюли (pager-fill, 7s в styles.css — держать равными) — только индикатор, пауза тем же классом.
+  // Ручное переключение перезапускает отсчёт. При prefers-reduced-motion автосмены нет.
+  var DURATION = 7000;
+  var pager = root.querySelector('.home-pager');
+  var hoverPause = false, focusPause = false;
+  var timer = null, startedAt = 0, remaining = DURATION;
+
+  function isPaused() { return hoverPause || focusPause || document.hidden; }
+
+  function schedule() {
+    clearTimeout(timer); timer = null;
+    if (reduced.matches || isPaused()) return;
+    startedAt = Date.now();
+    timer = setTimeout(function () { timer = null; go(target() + 1); }, remaining);
+  }
+
+  function holdTimer() {
+    if (timer === null) return;
+    clearTimeout(timer); timer = null;
+    remaining = Math.max(0, remaining - (Date.now() - startedAt));
+  }
+
+  restartTimer = function () { remaining = DURATION; schedule(); };
+
+  function syncPlaying() { pager.classList.toggle('is-playing', !reduced.matches); restartTimer(); }
+  function syncPaused() {
+    var paused = isPaused();
+    pager.classList.toggle('is-paused', paused);
+    if (paused) holdTimer(); else if (timer === null) schedule();
+  }
+
+  // Пауза, пока человек читает текст, наводится на пагинацию или работает с клавиатуры
+  [hero, pager, specs].forEach(function (el) {
+    el.addEventListener('mouseenter', function () { hoverPause = true; syncPaused(); });
+    el.addEventListener('mouseleave', function () { hoverPause = false; syncPaused(); });
+  });
+  // Только фокус с клавиатуры (:focus-visible) — клик мышкой по точке не должен останавливать показ
+  function keyboardFocusInside() {
+    var a = document.activeElement;
+    return !!a && root.contains(a) && a.matches(':focus-visible');
+  }
+  root.addEventListener('focusin', function () { focusPause = keyboardFocusInside(); syncPaused(); });
+  root.addEventListener('focusout', function () {
+    setTimeout(function () { focusPause = keyboardFocusInside(); syncPaused(); }, 0);
+  });
+  document.addEventListener('visibilitychange', syncPaused);
+  if (reduced.addEventListener) reduced.addEventListener('change', syncPlaying);
+
+  syncPlaying();
+  syncPaused();
 
   // Свайп по экрану (телефон): горизонтальный жест длиннее 40px и явно горизонтальный
   var sx = null, sy = null;

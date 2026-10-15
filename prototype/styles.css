@@ -16,8 +16,9 @@ body { min-height: 100svh; }
   min-height: max(600px, calc(100svh - 2 * var(--space-10)));
 }
 
-.home-nav { position: relative; z-index: 2; }
-.home-links { font-size: 15px; }
+.home-nav { position: relative; z-index: 10; } /* выше нижней кромки — раскрытое меню ложится поверх */
+/* Меню как в референсе Home_ux: плотный жирный сжатый капс (DS label = 600, здесь 700 и трекинг плотнее) */
+.home-links { font-size: 15px; font-weight: 700; letter-spacing: .01em; }
 .home-nav .dm-logo { color: var(--ink); text-decoration: none; }
 .home-nav .dm-logo:hover { text-decoration: none; }
 /* Лого: знак + слово, под словом мелкая подпись раздела (micro) */
@@ -25,6 +26,69 @@ body { min-height: 100svh; }
 .home-logo svg { margin-top: 1px; }
 .home-logo-words { display: flex; flex-direction: column; line-height: 1; }
 .home-logo-sub { margin-top: 3px; font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--ink-muted); }
+
+/* ===== Liquid-morph меню (порт 21st.dev/liquid-morph-floating-menu) =====
+   Закрыто: кружок 40px с бургером на месте иконки меню. Открыто (data-open): форма растёт вниз-влево
+   в панель 280×300 с радиусом рамки, из точки бургера разливается тёмный круг (ink), линии → крестик,
+   пункты проявляются лесенкой, буквы прокручиваются при наведении. Кривая как в оригинале: (.22,1,.36,1). */
+.burger { --e: cubic-bezier(.22,1,.36,1); position: relative; width: 40px; height: 40px; flex: none; margin-right: -10px; }
+.burger-shape {
+  position: absolute; top: 0; right: 0; width: 40px; height: 40px;
+  border-radius: 20px; overflow: hidden; isolation: isolate;
+  transition: width 700ms var(--e), height 450ms var(--e), border-radius 700ms var(--e);
+}
+.burger[data-open="true"] .burger-shape {
+  width: 280px; height: 300px; border-radius: var(--radius-frame);
+  transition: width 800ms var(--e), height 800ms var(--e), border-radius 800ms var(--e);
+}
+.burger-fill {
+  position: absolute; top: 20px; right: 20px; width: 820px; height: 820px;
+  border-radius: 50%; background: var(--ink);
+  transform: translate(50%, -50%) scale(0);
+  transition: transform 550ms var(--e);
+}
+.burger[data-open="true"] .burger-fill { transform: translate(50%, -50%) scale(1); transition: transform 900ms var(--e) 100ms; }
+
+.burger-toggle {
+  position: absolute; top: 0; right: 0; z-index: 2; width: 40px; height: 40px;
+  padding: 0; border: 0; background: none; cursor: pointer; color: var(--ink);
+  transition: color 300ms var(--e);
+}
+.burger[data-open="true"] .burger-toggle { color: var(--surface); }
+.burger-line {
+  position: absolute; left: 10px; top: 19px; width: 20px; height: 1.5px; background: currentColor;
+  transition: transform 400ms var(--e);
+}
+.burger-line:first-child { transform: translateY(-3px); }
+.burger-line:last-child { transform: translateY(3px); }
+.burger[data-open="true"] .burger-line:first-child { transform: rotate(45deg); }
+.burger[data-open="true"] .burger-line:last-child { transform: rotate(-45deg); }
+.burger-toggle:focus-visible { outline: 1px solid currentColor; outline-offset: -4px; border-radius: 20px; }
+
+.burger-list {
+  position: absolute; z-index: 1; top: 64px; left: 0; right: 0; bottom: 28px;
+  margin: 0; padding: 0 28px; list-style: none;
+  display: flex; flex-direction: column; justify-content: center; gap: 14px;
+  visibility: hidden; transition: visibility 0s linear 450ms;
+}
+.burger[data-open="true"] .burger-list { visibility: visible; transition: none; }
+.burger-link {
+  display: inline-flex; font-family: var(--font-display); font-size: 32px; font-weight: 700;
+  line-height: 1; letter-spacing: -.01em; text-transform: uppercase; color: var(--surface); text-decoration: none;
+  opacity: 0; transition: opacity 250ms var(--e);
+}
+.burger[data-open="true"] .burger-link { opacity: 1; transition: opacity 400ms var(--e) calc(380ms + var(--i, 0) * 80ms); }
+.burger-link:focus-visible { outline: 1px solid var(--surface); outline-offset: 4px; }
+/* Перебиваем .dm-nav a { color: inherit } и подчёркивание при hover из bundle.css — у пунктов меню свой цвет и прокрутка букв */
+.dm-nav .burger a.burger-link, .dm-nav .burger a.burger-link:hover { color: var(--surface); text-decoration: none; }
+/* Прокрутка букв: каждая буква — окно в 1em с двумя копиями, при наведении едет вверх с задержкой 30ms * n */
+.roll-c { display: inline-block; height: 1em; overflow: hidden; }
+.roll-in { display: flex; flex-direction: column; transition: transform 0ms; }
+.roll-in > span { display: block; height: 1em; line-height: 1em; }
+.burger-link:hover .roll-in, .burger-link:focus-visible .roll-in {
+  transform: translateY(-50%);
+  transition: transform 800ms var(--e) var(--d, 0ms);
+}
 
 /* Центр: один объект. multiply убирает белый фон фото в тон surface */
 .home-visual {
@@ -102,11 +166,23 @@ body { min-height: 100svh; }
 .home-pager .dm-dot::before {
   content: ""; display: block; width: 8px; height: 8px;
   border-radius: var(--radius-pill); background: var(--ink-muted);
-  transition: width 420ms cubic-bezier(.2,.7,.2,1), background-color 240ms ease;
+  transition: width 700ms cubic-bezier(.16,1,.3,1), background-color 400ms ease;
 }
 .home-pager .dm-dot:hover::before { background: var(--ink); }
 .home-pager .dm-dot[aria-current] { background: none; }
 .home-pager .dm-dot[aria-current]::before { width: 28px; background: var(--ink); }
+
+/* Автосмена: активная пилюля — серая дорожка, тёмная заливка растёт за 7s.
+   Время считает таймер в app.js (DURATION = 7000) — длительность здесь держать такой же. */
+.home-pager .dm-dot { position: relative; }
+.home-pager.is-playing .dm-dot[aria-current]::before { background: var(--ink-muted); }
+.home-pager.is-playing .dm-dot[aria-current]::after {
+  content: ""; position: absolute; left: 4px; top: 50%; height: 8px; margin-top: -4px; width: 0;
+  border-radius: var(--radius-pill); background: var(--ink);
+  animation: pager-fill 7000ms linear forwards;
+}
+.home-pager.is-paused .dm-dot[aria-current]::after { animation-play-state: paused; }
+@keyframes pager-fill { to { width: 28px; } }
 /* Категории-ссылки: как Nav — без цвета, ховер = подчёркивание 1px */
 .home-cats a { color: var(--ink); text-decoration: none; padding: 2px 0; }
 .home-cats a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
@@ -173,6 +249,7 @@ body { min-height: 100svh; }
 @media (prefers-reduced-motion: reduce) {
   .flow, .flow * { transition: none !important; }
   .home-pager .dm-dot::before { transition: none; }
+  .burger *, .burger-shape { transition-duration: 1ms !important; transition-delay: 0ms !important; }
   .flow:hover .flow-text, .flow:focus-visible .flow-text { transform: translateX(-10px); }
   .flow:hover .flow-arr-in, .flow:focus-visible .flow-arr-in { left: -25%; }
   .flow:hover .flow-arr-out, .flow:focus-visible .flow-arr-out { right: var(--space-4); }
